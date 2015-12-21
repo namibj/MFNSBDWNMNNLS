@@ -1,13 +1,16 @@
+```
 for i = 0 to m - 1
 	scheduleStuff(streams[i]);
 	recordEvent(streams[i], events[i]);
 for i = 0 to m - 1
 	scheduleStuff(streams[m+i]);
 	recordEvent(streams[i], events[i];
+```
 
 Macht nicht wirklich Sinn, da Kepler und Maxwell eh nur LOW vs. HIGH unterstützen und dies damit nicht mehr wi8rklich was bringt.
 Es macht aber Sinn, in "optimizeX(...)" die nicht "num_images"-fach parallelen Berechnungen in HIGH zu machen und die "num_images"-fach parallelen Berechnungen in LOW zu machen, um damit diesen seriellen Teil in den parallelen Teil eines anderen "optimizueX(...)" zu integrieren, damit der serielle Teil nicht zum Flaschenhals wird.
 
+```
 queue[1<<QUEUE_SIZE];
 X_prime[(lnum_images - QUEUE_SIZE - 1) * 2 + 1];
 X_temp[1<<QUEUE_SIZE];
@@ -31,4 +34,18 @@ optimizeRecursive(start,pos,lnum_images)
 			for(i = 0; i < 1<<QUEUE_SIZE; i++)
 				optimizeF(X_prime[(lnum_images - QUEUE_SIZE)<< ((j>>(lnum_images - QUEUE_SIZE - 1))^1)], Y[start + (j<<QUEUE_SIZE) + i], f[start + (j<<QUEUE_SIZE) + i], i);
 		optimizeX(X_prime[(lnum_images - QUEUE_SIZE) * pos], &(f[start]), &(Y[start]), 1<<lnum_images);
+```
 
+``` cu
+cufftHandle plan;
+cufftCreate(&plan);
+cufftSetAutoAllocation(plan, 0);
+cufftMakePlanMany(plan, ...);
+size_t worksize;
+void* workarea;
+cufftGetSize(plan, &worksize);
+cudaMalloc(&workarea, worksize);
+cufftSetWorkArea(plan, workarea);
+```
+
+Use the `workarea` pointer for multipe plan's, to not need that much temporary space in global GPU memory. Required for #9, #10, #11. Part of #22.
