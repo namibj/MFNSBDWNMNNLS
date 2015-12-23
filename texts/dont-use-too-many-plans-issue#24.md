@@ -1,4 +1,4 @@
-```
+``` vba
 for i = 0 to m - 1
 	scheduleStuff(streams[i]);
 	recordEvent(streams[i], events[i]);
@@ -7,10 +7,10 @@ for i = 0 to m - 1
 	recordEvent(streams[i], events[i];
 ```
 
-Macht nicht wirklich Sinn, da Kepler und Maxwell eh nur LOW vs. HIGH unterstützen und dies damit nicht mehr wi8rklich was bringt.
-Es macht aber Sinn, in "optimizeX(...)" die nicht "num_images"-fach parallelen Berechnungen in HIGH zu machen und die "num_images"-fach parallelen Berechnungen in LOW zu machen, um damit diesen seriellen Teil in den parallelen Teil eines anderen "optimizueX(...)" zu integrieren, damit der serielle Teil nicht zum Flaschenhals wird.
+Macht nicht wirklich Sinn, da Kepler und Maxwell eh nur `LOW` vs. `HIGH` unterstützen und dies damit nicht mehr wirklich was bringt.
+Es macht aber Sinn, in `optimizeX(...)` die nicht `num_images`-fach parallelen Berechnungen in `HIGH` zu machen und die `num_images`-fach parallelen Berechnungen in `LOW` zu machen, um damit diesen seriellen Teil in den parallelen Teil eines anderen `optimizueX(...)` zu integrieren, damit der serielle Teil nicht zum Flaschenhals wird.
 
-```
+``` vba 
 queue[1<<QUEUE_SIZE];
 X_prime[(lnum_images - QUEUE_SIZE - 1) * 2 + 1];
 X_temp[1<<QUEUE_SIZE];
@@ -48,6 +48,6 @@ cudaMalloc(&workarea, worksize);
 cufftSetWorkArea(plan, workarea);
 ```
 
-Use the `workarea` pointer for multipe plan's, to not need that much temporary space in global GPU memory. Required for #9, #10, #11. Part of #22.
+Use the `workarea` pointer for multipe `plan`'s, to not need that much temporary space in global GPU memory. Required for #9, #10, #11. Part of #22.
 
 Use `mmap()` to get a memory mapped version of the (preprocessed) input file and then use `cudaHostRegister()` to make it avaiable for GPU computing (the nice OS paging already manages the RAM as a cache for this). After that use `cudaHostUnregister()` to revoke the page lock that is no longer requiered.
