@@ -49,3 +49,5 @@ cufftSetWorkArea(plan, workarea);
 ```
 
 Use the `workarea` pointer for multipe plan's, to not need that much temporary space in global GPU memory. Required for #9, #10, #11. Part of #22.
+
+Use `mmap()` to get a memory mapped version of the (preprocessed) input file and then use `cudaHostRegister()` to make it avaiable for GPU computing (the nice OS paging already manages the RAM as a cache for this). After that use `cudaHostUnregister()` to revoke the page lock that is no longer requiered.
